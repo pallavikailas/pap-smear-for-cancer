@@ -3,9 +3,6 @@ import cv2
 import numpy as np
 from skimage.feature import greycomatrix, greycoprops
 from sklearn.preprocessing import StandardScaler
-from torchvision import datasets
-from torch.utils.data import DataLoader
-from torchvision.transforms import transforms
 
 def extract_color_histogram(image):
     hist = cv2.calcHist([image], [0, 1, 2], None, [8, 8, 8], [0, 256, 0, 256, 0, 256])
@@ -35,7 +32,7 @@ def get_data(data_dir):
             if image is not None:
                 features = extract_features(image)
                 data.append(features)
-                labels.append(int(class_label))  # assuming labels are in integer form
+                labels.append(int(class_label))
     scaler = StandardScaler()
-    data = scaler.fit_transform(data)  # Standardize features
+    data = scaler.fit_transform(data)
     return np.array(data), np.array(labels)
