@@ -1,19 +1,41 @@
 import os
-import torch
-from torchvision import datasets, transforms
+import cv2
+import numpy as np
+from skimage.feature import greycomatrix, greycoprops
+from sklearn.preprocessing import StandardScaler
+from torchvision import datasets
 from torch.utils.data import DataLoader
+from torchvision.transforms import transforms
 
-def get_dataloaders(data_dir, batch_size=32):
-    transform = transforms.Compose([
-        transforms.Resize((224, 224)),
-        transforms.ToTensor(),
-        transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225])
-    ])
+def extract_color_histogram(image):
+    hist = cv2.calcHist([image], [0, 1, 2], None, [8, 8, 8], [0, 256, 0, 256, 0, 256])
+    cv2.normalize(hist, hist)
+    return hist.flatten()
 
-    train_dataset = datasets.ImageFolder(os.path.join(data_dir, 'train'), transform=transform)
-    val_dataset = datasets.ImageFolder(os.path.join(data_dir, 'validation'), transform=transform)
+def extract_glcm_features(image, distances=[5], angles=[0]):
+    gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+    glcm = greycomatrix(gray, distances=distances, angles=angles, symmetric=True, normed=True)
+    contrast = greycoprops(glcm, 'contrast').flatten()
+    dissimilarity = greycoprops(glcm, 'dissimilarity').flatten()
+    homogeneity = greycoprops(glcm, 'homogeneity').flatten()
+    return np.hstack([contrast, dissimilarity, homogeneity])
 
-    train_loader = DataLoader(train_dataset, batch_size=batch_size, shuffle=True)
-    val_loader = DataLoader(val_dataset, batch_size=batch_size, shuffle=False)
+def extract_features(image):
+    color_hist = extract_color_histogram(image)
+    glcm_features = extract_glcm_features(image)
+    return np.hstack([color_hist, glcm_features])
 
-    return train_loader, val_loader
+def get_data(data_dir):
+    data, labels = [], []
+    for class_label in os.listdir(data_dir):
+        class_dir = os.path.join(data_dir, class_label)
+        for img_name in os.listdir(class_dir):
+            img_path = os.path.join(class_dir, img_name)
+            image = cv2.imread(img_path)
+            if image is not None:
+                features = extract_features(image)
+                data.append(features)
+                labels.append(int(class_label))  # assuming labels are in integer form
+    scaler = StandardScaler()
+    data = scaler.fit_transform(data)  # Standardize features
+    return np.array(data), np.array(labels)
