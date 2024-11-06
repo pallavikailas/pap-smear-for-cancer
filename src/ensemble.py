@@ -4,15 +4,15 @@ from train import train_random_forest, train_knn, train_svm
 from data_loader import get_data
 from sklearn.metrics import f1_score
 
-# Weighted Voting: Use model accuracy as weights for predictions
-def weighted_voting(models, X, accuracies):
+# Weighted Voting: Use f1-score as weights for predictions
+def weighted_voting(models, X, score):
     preds = [model.predict_proba(X) for model in models]
     
     # Ensure that predictions are in the expected shape
     print("Predictions shape:", np.array(preds).shape)
     
     # Normalize accuracies so that they sum to 1
-    weights = np.array(accuracies) / np.sum(accuracies)
+    weights = np.array(score) / np.sum(score)
     print("Normalized Weights:", weights)
     
     # Stack the predicted probabilities for each model
@@ -24,9 +24,9 @@ def weighted_voting(models, X, accuracies):
 
 
 # Evaluate the ensemble model with weighted voting
-def evaluate_ensemble(models, X_val, y_val, accuracies):
+def evaluate_ensemble(models, X_val, y_val, score):
     # Get ensemble predictions using weighted voting
-    ensemble_preds = weighted_voting(models, X_val, accuracies)
+    ensemble_preds = weighted_voting(models, X_val, score)
     
     # Calculate the F1-score for the ensemble model
     f1 = f1_score(y_val, ensemble_preds, average='weighted')  # Use 'weighted' for multi-class problems
