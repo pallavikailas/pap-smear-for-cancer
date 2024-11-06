@@ -26,9 +26,3 @@ if __name__ == "__main__":
     rf_model = train_random_forest(X_train, y_train)
     knn_model = train_knn(X_train, y_train)
     svm_model = train_svm(X_train, y_train)
-
-    # Save models if needed
-    # import joblib
-    # joblib.dump(rf_model, '../models/random_forest.pkl')
-    # joblib.dump(knn_model, '../models/knn.pkl')
-    # joblib.dump(svm_model, '../models/svm.pkl')
