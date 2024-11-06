@@ -1,6 +1,5 @@
 import numpy as np
 from sklearn.metrics import accuracy_score
-from sklearn.externals import joblib  # for loading pre-trained models
 
 # Weighted Voting: Use model accuracy as weights for predictions
 def weighted_voting(models, X, accuracies):
