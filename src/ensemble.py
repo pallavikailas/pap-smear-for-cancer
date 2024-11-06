@@ -2,6 +2,7 @@ import numpy as np
 from sklearn.metrics import accuracy_score
 from train import train_random_forest, train_knn, train_svm
 from data_loader import get_data
+from sklearn.metrics import f1_score
 
 # Weighted Voting: Use model accuracy as weights for predictions
 def weighted_voting(models, X, accuracies):
@@ -21,8 +22,6 @@ def weighted_voting(models, X, accuracies):
     # Choose the class with the highest weighted average probability
     return np.argmax(weighted_preds, axis=1)
 
-
-from sklearn.metrics import f1_score
 
 # Evaluate the ensemble model with weighted voting
 def evaluate_ensemble(models, X_val, y_val, accuracies):
