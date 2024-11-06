@@ -1,63 +1,40 @@
 import numpy as np
 from sklearn.metrics import accuracy_score
-from sklearn.ensemble import RandomForestClassifier
-from sklearn.neighbors import KNeighborsClassifier
-from sklearn.svm import SVC
-from sklearn.preprocessing import StandardScaler
-from sklearn.model_selection import train_test_split
-from data_loader import get_data
+from sklearn.externals import joblib  # for loading pre-trained models
 
-# Soft Voting: Ensuring all models output probabilities
-def soft_voting(models, X):
+# Weighted Voting: Use model accuracy as weights for predictions
+def weighted_voting(models, X, accuracies):
+    # Get predicted probabilities for each model
     preds = [model.predict_proba(X) for model in models]
     
-    # Stack the predicted probabilities for each model (along axis 0)
-    avg_preds = np.mean(preds, axis=0)
+    # Normalize accuracies so that they sum to 1
+    weights = np.array(accuracies) / np.sum(accuracies)
     
-    # Choose the class with the highest average probability
-    return np.argmax(avg_preds, axis=1)
+    # Stack the predicted probabilities for each model
+    weighted_preds = np.average(np.array(preds), axis=0, weights=weights)
+    
+    # Choose the class with the highest weighted average probability
+    return np.argmax(weighted_preds, axis=1)
 
-# Improved training functions
-def train_random_forest(X_train, y_train):
-    rf = RandomForestClassifier(n_estimators=100, random_state=42)
-    rf.fit(X_train, y_train)
-    return rf
-
-def train_knn(X_train, y_train):
-    knn = KNeighborsClassifier(n_neighbors=5)
-    knn.fit(X_train, y_train)
-    return knn
-
-def train_svm(X_train, y_train):
-    svm = SVC(kernel="linear", probability=True, random_state=42)  # Ensure probability=True for predict_proba
-    svm.fit(X_train, y_train)
-    return svm
-
-# Evaluate the ensemble model
-def evaluate_ensemble(models, X_val, y_val):
-    ensemble_preds = soft_voting(models, X_val)
+# Evaluate the ensemble model with weighted voting
+def evaluate_ensemble(models, X_val, y_val, accuracies):
+    # Get ensemble predictions using weighted voting
+    ensemble_preds = weighted_voting(models, X_val, accuracies)
     accuracy = accuracy_score(y_val, ensemble_preds)
     print(f"Ensemble Accuracy: {accuracy * 100:.2f}%")
 
+
 if __name__ == "__main__":
-    # Load and prepare data
+    # Load validation data
     X, y = get_data("data/validation")
-    
-    # Standardize the features before training
-    scaler = StandardScaler()
-    X_scaled = scaler.fit_transform(X)
-    
-    # Split into training and validation
-    X_train, X_val, y_train, y_val = train_test_split(X_scaled, y, test_size=0.2, random_state=42)
 
-    # Train individual models
-    rf_model = train_random_forest(X_train, y_train)
-    knn_model = train_knn(X_train, y_train)
-    svm_model = train_svm(X_train, y_train)
+     rf_model = train_random_forest(X, y)
+     knn_model = train_knn(X, y)
+     svm_model = train_svm(X, y)
 
-    # Evaluate ensemble
-    print("Ensemble Model:")
-    evaluate_ensemble([rf_model, knn_model, svm_model], X_val, y_val)
+     print("Ensemble Model:")
+     evaluate_ensemble([rf_model, knn_model, svm_model], X, y)
+
 
 #import numpy as np
 #from sklearn.metrics import accuracy_score
