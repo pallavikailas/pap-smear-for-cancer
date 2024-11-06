@@ -36,7 +36,7 @@ def get_data(data_dir):
             if image is not None:
                 features = extract_features(image)
                 data.append(features)
-                labels.append(class_label) 
+                labels.append(class_label) # keep label as string
 
     # Convert labels to numeric values
     labels = label_encoder.fit_transform(labels)
