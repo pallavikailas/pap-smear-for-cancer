@@ -24,9 +24,6 @@ def extract_features(image):
     return np.array(features)
 
 def get_data(data_dir):
-    """
-    Loads data from the specified directory, extracts features, and scales them.
-    """
     data, labels = [], []
     for class_label in os.listdir(data_dir):
         class_dir = os.path.join(data_dir, class_label)
@@ -34,11 +31,9 @@ def get_data(data_dir):
             img_path = os.path.join(class_dir, img_name)
             image = cv2.imread(img_path)
             if image is not None:
-                image = load_and_preprocess(img_path)
                 features = extract_features(image)
                 data.append(features)
-                labels.append(int(class_label))
-                
+                labels.append(class_label)  # Keep the label as a string
     scaler = StandardScaler()
     data = scaler.fit_transform(data)
     return np.array(data), np.array(labels)
