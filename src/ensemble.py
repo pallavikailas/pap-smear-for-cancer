@@ -37,11 +37,23 @@ def weighted_voting(models, X, accuracies):
 
 
 # Evaluate the ensemble model with weighted voting
+# def evaluate_ensemble(models, X_val, y_val, accuracies):
+#     # Get ensemble predictions using weighted voting
+#     ensemble_preds = weighted_voting(models, X_val, accuracies)
+#     accuracy = accuracy_score(y_val, ensemble_preds)
+#     print(f"Ensemble Accuracy: {accuracy * 100:.2f}%")
+
+from sklearn.metrics import f1_score
+
+# Evaluate the ensemble model with weighted voting
 def evaluate_ensemble(models, X_val, y_val, accuracies):
     # Get ensemble predictions using weighted voting
     ensemble_preds = weighted_voting(models, X_val, accuracies)
-    accuracy = accuracy_score(y_val, ensemble_preds)
-    print(f"Ensemble Accuracy: {accuracy * 100:.2f}%")
+    
+    # Calculate the F1-score for the ensemble model
+    f1 = f1_score(y_val, ensemble_preds, average='weighted')  # Use 'weighted' for multi-class problems
+    print(f"Ensemble F1-Score: {f1 * 100:.2f}%")
+
     
 
 #import numpy as np
