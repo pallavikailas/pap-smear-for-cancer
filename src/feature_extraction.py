@@ -31,7 +31,7 @@ def histogram_equalization(img):
 def color_features(img):
     features = []
     color_spaces = [
-        ('RGB', cv2.COLOR_RGB2RGB),
+        ('RGB', cv2.COLOR_BGR2RGB),
         ('HSV', cv2.COLOR_RGB2HSV),
         ('LAB', cv2.COLOR_RGB2LAB)
     ]
