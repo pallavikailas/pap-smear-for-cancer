@@ -1,5 +1,7 @@
 import numpy as np
 from sklearn.metrics import accuracy_score
+from train import train_random_forest, train_knn, train_svm
+from data_loader import get_data
 
 # Weighted Voting: Use model accuracy as weights for predictions
 def weighted_voting(models, X, accuracies):
@@ -22,17 +24,25 @@ def evaluate_ensemble(models, X_val, y_val, accuracies):
     accuracy = accuracy_score(y_val, ensemble_preds)
     print(f"Ensemble Accuracy: {accuracy * 100:.2f}%")
 
-
 if __name__ == "__main__":
     # Load validation data
     X, y = get_data("data/validation")
 
+    # Train the models (this assumes you already have the training code set up in train.py)
     rf_model = train_random_forest(X, y)
     knn_model = train_knn(X, y)
     svm_model = train_svm(X, y)
 
+    # Calculate accuracy of each model on the validation set
+    rf_acc = accuracy_score(y, rf_model.predict(X))
+    knn_acc = accuracy_score(y, knn_model.predict(X))
+    svm_acc = accuracy_score(y, svm_model.predict(X))
+    accuracies = [rf_acc, knn_acc, svm_acc]
+
+    # Evaluate ensemble
     print("Ensemble Model:")
-    evaluate_ensemble([rf_model, knn_model, svm_model], X, y)
+    evaluate_ensemble([rf_model, knn_model, svm_model], X, y, accuracies)
+
 
 
 #import numpy as np
