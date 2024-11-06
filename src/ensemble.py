@@ -28,12 +28,12 @@ if __name__ == "__main__":
     # Load validation data
     X, y = get_data("data/validation")
 
-     rf_model = train_random_forest(X, y)
-     knn_model = train_knn(X, y)
-     svm_model = train_svm(X, y)
+    rf_model = train_random_forest(X, y)
+    knn_model = train_knn(X, y)
+    svm_model = train_svm(X, y)
 
-     print("Ensemble Model:")
-     evaluate_ensemble([rf_model, knn_model, svm_model], X, y)
+    print("Ensemble Model:")
+    evaluate_ensemble([rf_model, knn_model, svm_model], X, y)
 
 
 #import numpy as np
