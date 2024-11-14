@@ -4,7 +4,6 @@ This project is focused on detecting cancer through the analysis of Pap smear im
 
 ## Table of Contents
 - [Installation](#installation)
-- [Usage](#usage)
 - [Project Structure](#project-structure)
 - [Dataset](#dataset)
 - [Model](#model)
@@ -19,21 +18,13 @@ cd pap-smear-for-cancer
 pip install -r requirements.txt
 ```
 
-## Usage
-To run the application and generate predictions, execute the following command:
-
-```bash
-python main.py
-```
-
 ## Project Structure
-- `data/`: Contains the dataset files, including labeled images of Pap smears.
+- `data/`: Contains the dataset files, including labelled images of Pap smears.
 - `src/`: Source code for data preprocessing, feature extraction, and model training.
-- `main.py`: The main script for running model training and predictions.
 - `requirements.txt`: List of dependencies required for the project.
 
 ## Dataset
-The project utilizes the Herlev Dataset from Kaggle, containing labeled images of Pap smear cells. The labels include normal and various stages of abnormality, aiding in training the model for cancerous vs. non-cancerous cell classification.
+The project utilizes the Herlev Dataset from Kaggle, containing labelled images of Pap smear cells. The labels include normal and various stages of abnormality, aiding in training the model for cancerous vs. non-cancerous cell classification.
 
 ## Model
-The model uses machine learning techniques (excluding CNNs) to classify cells as healthy or potentially cancerous based on features extracted from Pap smear images.
+The model uses the ensembling of 3 machine-learning techniques to classify cells as healthy or potentially cancerous based on features extracted from Pap smear images.
